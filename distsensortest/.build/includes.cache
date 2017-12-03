@@ -1,0 +1,17 @@
+[
+  {
+    "Sourcefile": "",
+    "Include": "",
+    "Includepath": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino"
+  },
+  {
+    "Sourcefile": "",
+    "Include": "",
+    "Includepath": "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\variants\\standard"
+  },
+  {
+    "Sourcefile": "C:\\Users\\Jedrek\\Documents\\ArduinoProjects\\2017-2018-RobotMaze\\distsensortest\\.build\\sketch\\sketch.ino.cpp",
+    "Include": "",
+    "Includepath": ""
+  }
+]
