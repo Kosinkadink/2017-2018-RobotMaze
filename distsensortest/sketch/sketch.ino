@@ -1,15 +1,15 @@
-#define DIST_PIN1 A0
-#define DIST_PIN2 A1
+#define DIST_PIN_L A14
+#define DIST_PIN_R A15
 
 
 float newValueWeight = 0.10;
-int movingMean1 = 0;
-int movingMean2 = 0;
+int movingMeanL = 0;
+int movingMeanR = 0;
 
 
 void setup() {
-	pinMode(DIST_PIN1,INPUT);
-	pinMode(DIST_PIN2,INPUT);
+	pinMode(DIST_PIN_L,INPUT);
+	pinMode(DIST_PIN_R,INPUT);
 	Serial.begin(9600);
 }
 
@@ -18,13 +18,15 @@ void getNewMovingMean(int newValue, int& mean) {
 }
 
 void loop() {
-	int readValue1 = analogRead(DIST_PIN1);
-	int readValue2 = analogRead(DIST_PIN2);
-	getNewMovingMean(readValue1,movingMean1);
-	getNewMovingMean(readValue2,movingMean2);
+	int readValueL = analogRead(DIST_PIN_L);
+	int readValueR = analogRead(DIST_PIN_R);
+	getNewMovingMean(readValueL,movingMeanL);
+	getNewMovingMean(readValueR,movingMeanR);
 	//Serial.print(movingMean1);
 	//Serial.print("\t");
 	//Serial.println(movingMean2);
-	Serial.println(movingMean1-movingMean2);
-	delay(10);
+	Serial.print(movingMeanR-movingMeanL);
+	Serial.print("\t");
+	Serial.println((movingMeanR+movingMeanL)/2);
+	delay(50);
 }
