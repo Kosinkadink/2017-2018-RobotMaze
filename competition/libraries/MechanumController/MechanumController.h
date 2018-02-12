@@ -1,5 +1,5 @@
-#ifndef MECHANUMCONTROLLER
-#define MECHANUMCONTROLLER
+#ifndef MECHANUMCONTROLLER_H
+#define MECHANUMCONTROLLER_H
 #include "Arduino.h"
 #include "ScrapController.h"
 
