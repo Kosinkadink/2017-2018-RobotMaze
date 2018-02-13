@@ -1,5 +1,7 @@
 #include "ScrapController.h"
 #include "MechanumController.h"
+#include "MazeRobot.h"
+#include "PairIR.h"
 
 
 #define DIST_PIN_L A14
@@ -41,7 +43,7 @@ int movingMeanR = 0;
 int diffGoal = 0;
 int diffTolerance = 7;
 
-int distGoal = 500;
+int distGoal = 560;
 int distTolerance = 30;
 
 
@@ -63,6 +65,11 @@ ScrapMotorControl speedBR = ScrapMotorControl(motorBR, encoderBR);
 
 MechanumController mechControl = MechanumController(speedFL,speedFR,speedBL,speedBR);
 
+MazeRobot mazeRobot = MazeRobot(mechControl);
+
+// create IR
+PairIR rightPair = PairIR(DIST_PIN_L, DIST_PIN_R);
+
 
 unsigned long startTime = micros();
 unsigned long startTimeIR = micros();
@@ -70,12 +77,17 @@ unsigned long startTimeIR = micros();
 
 void setup() {
 	initEncoders();
+	// set IR stuff
+	rightPair.setDiffGoal(diffGoal);
+	rightPair.setDiffTolerance(diffTolerance);
+	rightPair.setDistGoal(distGoal);
+	rightPair.setDistTolerance(distTolerance);
+	// set mech stuff
 	mechControl.setMaximumValue(max_stick_value);
 	mechControl.setDeadzone(deadzone);
-	pinMode(DIST_PIN_L,INPUT);
-	pinMode(DIST_PIN_R,INPUT);
 	Serial.begin(9600);
-	mechControl.setTranslateY(5);
+	//mechControl.setTranslateY(3);
+	mazeRobot.setTranslateY(10);
 }
 
 void getNewMovingMean(int newValue, int& mean) {
@@ -84,46 +96,55 @@ void getNewMovingMean(int newValue, int& mean) {
 
 void loop() {
 	unsigned long currentTime = micros();
-	if (currentTime - startTime > 2000) {
-		// set rotation
-		if (movingMeanR-movingMeanL < diffGoal - diffTolerance) {
-			mechControl.setRotate(-3);
-		}
-		else if (movingMeanR-movingMeanL > diffGoal + diffTolerance) {
-			mechControl.setRotate(3);
-		}
-		else {
-			mechControl.setRotate(0);
-		}
-		// set translation
-		if ((movingMeanR+movingMeanL)/2 < distGoal - distTolerance) {
-			mechControl.setTranslateX(5);
-		}
-		else if ((movingMeanR+movingMeanL)/2 > distGoal + distTolerance) {
-			mechControl.setTranslateX(-5);	
-		}
-		else {
-			mechControl.setTranslateX(0);
-		}
-
-		mechControl.performMovement();
-		startTime = currentTime;
-	}
 	if (currentTime - startTimeIR > 2000) {
-		int readValueL = analogRead(DIST_PIN_L);
-		int readValueR = analogRead(DIST_PIN_R);
-		getNewMovingMean(readValueL,movingMeanL);
-		getNewMovingMean(readValueR,movingMeanR);
+		//int readValueL = analogRead(DIST_PIN_L);
+		//int readValueR = analogRead(DIST_PIN_R);
+		//getNewMovingMean(readValueL,movingMeanL);
+		//getNewMovingMean(readValueR,movingMeanR);
 		//Serial.print(movingMean1);
 		//Serial.print("\t");
 		//Serial.println(movingMean2);
-		Serial.print(movingMeanR-movingMeanL);
+		rightPair.read();
+		Serial.print(rightPair.getDiff());
 		Serial.print("\t");
-		Serial.println((movingMeanR+movingMeanL)/2);
+		Serial.println(rightPair.getDist());
 
 		startTimeIR = currentTime;
 		//delay(50);
 	}
+	if (currentTime - startTime > 2000) {
+		// set rotation
+		if (rightPair.getDiffCorrection() < 0) {
+			//mechControl.setRotate(-3);
+			mazeRobot.correctRotate(-3);
+		}
+		else if (rightPair.getDiffCorrection() > 0) {
+			//mechControl.setRotate(3);
+			mazeRobot.correctRotate(3);
+		}
+		else {
+			//mechControl.setRotate(0);
+			mazeRobot.correctRotate(0);
+		}
+		// set translation
+		if (rightPair.getDistCorrection() > 0) {
+			//mechControl.setTranslateX(5);
+			mazeRobot.correctTranslateX(5);
+		}
+		else if (rightPair.getDistCorrection() < 0) {
+			//mechControl.setTranslateX(-5);
+			mazeRobot.correctTranslateX(-5);
+		}
+		else {
+			//mechControl.setTranslateX(0);
+			mazeRobot.correctTranslateX(0);
+		}
+
+		//mechControl.performMovement();
+		mazeRobot.performMovement();
+		startTime = currentTime;
+	}
+
 }
 
 

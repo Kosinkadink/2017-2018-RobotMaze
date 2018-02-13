@@ -8,7 +8,7 @@ MazeRobot::MazeRobot(MechanumController& controller) {
 
 void MazeRobot::performMovement() {
 	// if no corrections necessary, do goals
-	if (!correctX && !correctY && !correctRotate) {
+	if (!correctionX && !correctionY && !correctionRotate) {
 		currentX = goalX;
 		currentY = goalY;
 		currentRotate = goalRotate;
@@ -16,45 +16,45 @@ void MazeRobot::performMovement() {
 	// otherwise, throttle speeds to allow for correction
 	else {
 		// got total absolute sum of corrections
-		long correctAbsSum = abs(correctX) + abs(correctY) + abs(correctRotate);
+		long correctAbsSum = abs(correctionX) + abs(correctionY) + abs(correctionRotate);
 		// calculate X
 		if (goalX > 0) {
-			currentX = max(goalX-correctAbsSum,0) + correctX;
+			currentX = max(goalX-correctAbsSum,0) + correctionX;
 		}
 		else if (goalX < 0) {
-			currentX = min(goalX+correctAbsSum,0) + correctX;
+			currentX = min(goalX+correctAbsSum,0) + correctionX;
 		}
 		else {
-			currentX = correctX;
+			currentX = correctionX;
 		}
 		// calculate Y
 		if (goalY > 0) {
-			currentY = max(goalY-correctAbsSum,0) + correctY;
+			currentY = max(goalY-correctAbsSum,0) + correctionY;
 		}
 		else if (goalY < 0) {
-			currentY = min(goalY+correctAbsSum,0) + correctY;
+			currentY = min(goalY+correctAbsSum,0) + correctionY;
 		}
 		else {
-			currentY = correctY;
+			currentY = correctionY;
 		}
 		// calculate Rotate
 		if (goalRotate > 0) {
-			currentRotate = maRotate(goalRotate-correctAbsSum,0) + correctRotate;
+			currentRotate = max(goalRotate-correctAbsSum,0) + correctionRotate;
 		}
 		else if (goalRotate < 0) {
-			currentRotate = min(goalRotate+correctAbsSum,0) + correctRotate;
+			currentRotate = min(goalRotate+correctAbsSum,0) + correctionRotate;
 		}
 		else {
-			currentRotate = correctRotate;
+			currentRotate = correctionRotate;
 		}
 	}
 
 	// set mech movement
-	mech.setTranslateX(currentX);
-	mech.setTranslateY(currentY);
-	mech.setRotate(currentRotate);
+	mech->setTranslateX(currentX);
+	mech->setTranslateY(currentY);
+	mech->setRotate(currentRotate);
 	// finally, perform mech's movement
-	mech.performMovement();
+	mech->performMovement();
 }
 
 
