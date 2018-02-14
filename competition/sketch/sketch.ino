@@ -87,7 +87,7 @@ void setup() {
 	mechControl.setDeadzone(deadzone);
 	Serial.begin(9600);
 	//mechControl.setTranslateY(3);
-	mazeRobot.setTranslateY(10);
+	mazeRobot.setTranslateY(20);
 }
 
 void getNewMovingMean(int newValue, int& mean) {
