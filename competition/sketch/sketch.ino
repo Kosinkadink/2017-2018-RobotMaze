@@ -66,7 +66,7 @@ MazeRobot mazeRobot = MazeRobot(mechControl);
 // create IR
 PairIR rightPair = PairIR(DIST_PIN_L, DIST_PIN_R);
 
-float generalSpeed = 30;
+float generalSpeed = 20;
 
 PID rightDistPID = PID(0.05,0.00001,0.00001);
 PID rightDiffPID = PID(0.05,0.00001,0);
@@ -97,7 +97,7 @@ void setup() {
 	rightDistPID.reset();
 	rightDiffPID.reset();
 	delay(500);
-	mazeRobot.setTranslateY(30);
+	mazeRobot.setTranslateY(generalSpeed);
 }
 
 void loop() {
