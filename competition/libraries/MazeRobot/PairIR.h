@@ -16,7 +16,7 @@ class PairIR {
 		int leftReadingMean = distGoal;
 		int rightReadingMean = distGoal;
 		// moving average variables
-		float newValueWeight = 0.40;
+		float newValueWeight = 0.70;
 		// FUNCTIONS
 		void getNewMovingMean(int newValue, int& mean);
 	public:

@@ -2,6 +2,7 @@
 #include "MechanumController.h"
 #include "MazeRobot.h"
 #include "PairIR.h"
+#include "PID.h"
 
 
 #define DIST_PIN_L A14
@@ -35,11 +36,6 @@ const long max_stick_value = 100;
 #define BACK_RIGHT_MOTOR_PIN2 25
 
 
-// IR stuff
-float newValueWeight = 0.40;
-int movingMeanL = 0;
-int movingMeanR = 0;
-
 int diffGoal = 0;
 int diffTolerance = 7;
 
@@ -70,9 +66,14 @@ MazeRobot mazeRobot = MazeRobot(mechControl);
 // create IR
 PairIR rightPair = PairIR(DIST_PIN_L, DIST_PIN_R);
 
+float generalSpeed = 30;
+
+PID rightDistPID = PID(0.05,0.00001,0.00001);
+PID rightDiffPID = PID(0.05,0.00001,0);
 
 unsigned long startTime = micros();
 unsigned long startTimeIR = micros();
+unsigned long serialTime = micros();
 
 
 void setup() {
@@ -82,21 +83,26 @@ void setup() {
 	rightPair.setDiffTolerance(diffTolerance);
 	rightPair.setDistGoal(distGoal);
 	rightPair.setDistTolerance(distTolerance);
+	// set PID stuff
+	rightDistPID.setGoal(0);
+	rightDiffPID.setGoal(0);
+
 	// set mech stuff
 	mechControl.setMaximumValue(max_stick_value);
 	mechControl.setDeadzone(deadzone);
 	Serial.begin(9600);
 	//mechControl.setTranslateY(3);
-	mazeRobot.setTranslateY(20);
-}
-
-void getNewMovingMean(int newValue, int& mean) {
-	mean = newValue*newValueWeight + mean*(1-newValueWeight);
+	mazeRobot.setTranslateY(0);
+	//delay(2000);
+	rightDistPID.reset();
+	rightDiffPID.reset();
+	delay(500);
+	mazeRobot.setTranslateY(30);
 }
 
 void loop() {
 	unsigned long currentTime = micros();
-	if (currentTime - startTimeIR > 2000) {
+	if (currentTime - startTimeIR > 5000) {
 		//int readValueL = analogRead(DIST_PIN_L);
 		//int readValueR = analogRead(DIST_PIN_R);
 		//getNewMovingMean(readValueL,movingMeanL);
@@ -105,16 +111,18 @@ void loop() {
 		//Serial.print("\t");
 		//Serial.println(movingMean2);
 		rightPair.read();
-		Serial.print(rightPair.getDiff());
-		Serial.print("\t");
-		Serial.println(rightPair.getDist());
-
+		rightDistPID.calculate(rightPair.getDistCorrection());
+		rightDiffPID.calculate(rightPair.getDiffCorrection());
+		//Serial.print(rightPair.getDiff());
+		//Serial.print("\t");
+		//Serial.println(rightPair.getDist());
 		startTimeIR = currentTime;
+
 		//delay(50);
 	}
 	if (currentTime - startTime > 2000) {
 		// set rotation
-		if (rightPair.getDiffCorrection() < 0) {
+		/*if (rightPair.getDiffCorrection() < 0) {
 			//mechControl.setRotate(-3);
 			mazeRobot.correctRotate(-3);
 		}
@@ -138,11 +146,19 @@ void loop() {
 		else {
 			//mechControl.setTranslateX(0);
 			mazeRobot.correctTranslateX(0);
-		}
+		}*/
+		mazeRobot.correctRotate(rightDiffPID.getValue());
+		mazeRobot.correctTranslateX(rightDistPID.getValue());
 
 		//mechControl.performMovement();
 		mazeRobot.performMovement();
 		startTime = currentTime;
+	}
+	if (currentTime - serialTime > 100000) {
+		Serial.print(rightDistPID.getValue());
+		Serial.print("\t");
+		Serial.println(rightDiffPID.getValue());
+		serialTime = currentTime;
 	}
 
 }
