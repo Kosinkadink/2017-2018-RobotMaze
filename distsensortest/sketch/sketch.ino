@@ -17,11 +17,6 @@ PairIR frontPair = PairIR(DIST_PIN_FRONT_L, DIST_PIN_FRONT_R);
 PairIR rightPair = PairIR(DIST_PIN_RIGHT_L, DIST_PIN_RIGHT_R);
 
 
-float newValueWeight = 0.10;
-int movingMeanL = 0;
-int movingMeanR = 0;
-
-
 void setup() {
 	Serial.begin(9600);
 }
