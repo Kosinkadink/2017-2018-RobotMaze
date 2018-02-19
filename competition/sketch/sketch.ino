@@ -5,8 +5,14 @@
 #include "PID.h"
 
 
-#define DIST_PIN_L A14
-#define DIST_PIN_R A15
+#define DIST_PIN_BACK_L A8
+#define DIST_PIN_BACK_R A9
+#define DIST_PIN_LEFT_L A10
+#define DIST_PIN_LEFT_R A11
+#define DIST_PIN_FRONT_L A12
+#define DIST_PIN_FRONT_R A13
+#define DIST_PIN_RIGHT_L A14
+#define DIST_PIN_RIGHT_R A15
 
 
 #define CHECK_ZONE 5000
@@ -39,7 +45,7 @@ const long max_stick_value = 100;
 int diffGoal = 0;
 int diffTolerance = 7;
 
-int distGoal = 560;
+int distGoal = 500;
 int distTolerance = 30;
 
 
@@ -64,9 +70,12 @@ MechanumController mechControl = MechanumController(speedFL,speedFR,speedBL,spee
 MazeRobot mazeRobot = MazeRobot(mechControl);
 
 // create IR
-PairIR rightPair = PairIR(DIST_PIN_L, DIST_PIN_R);
+PairIR backPair = PairIR(DIST_PIN_BACK_L, DIST_PIN_BACK_R);
+PairIR leftPair = PairIR(DIST_PIN_LEFT_L, DIST_PIN_LEFT_R);
+PairIR frontPair = PairIR(DIST_PIN_FRONT_L, DIST_PIN_FRONT_R);
+PairIR rightPair = PairIR(DIST_PIN_RIGHT_L, DIST_PIN_RIGHT_R);
 
-float generalSpeed = 20;
+float generalSpeed = 5;
 
 PID rightDistPID = PID(0.05,0.00001,0.00001);
 PID rightDiffPID = PID(0.05,0.00001,0);
@@ -92,11 +101,11 @@ void setup() {
 	mechControl.setDeadzone(deadzone);
 	Serial.begin(9600);
 	//mechControl.setTranslateY(3);
-	mazeRobot.setTranslateY(0);
+	//mazeRobot.setTranslateY(0);
 	//delay(2000);
 	rightDistPID.reset();
 	rightDiffPID.reset();
-	delay(500);
+	delay(2000);
 	mazeRobot.setTranslateY(generalSpeed);
 }
 

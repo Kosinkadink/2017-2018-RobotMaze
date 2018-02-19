@@ -6,10 +6,14 @@ class PairIR {
 	private:
 		int leftIR;
 		int rightIR;
+		// difference variables
 		int diffGoal = 0;
 		int diffTolerance = 5;
+		// distance variables
 		int distGoal = 400;
 		int distTolerance = 10;
+		int distMin = 0;
+		int distMax = 0;
 		// last readings
 		int leftReading = distGoal;
 		int rightReading = distGoal;
@@ -27,6 +31,8 @@ class PairIR {
 		void setDiffTolerance(int thresh) { diffTolerance = thresh; };
 		void setDistGoal(int goal) { distGoal = goal; };
 		void setDistTolerance(int thresh) { distTolerance = thresh; };
+		void setDistMin(int min) { distMin = min; };
+		void setDistMax(int max) { distMax = max; };
 		void setNewValueWeight(float value) { newValueWeight = value; };
 		// get raw data
 		void read(); // perform sensor readings
