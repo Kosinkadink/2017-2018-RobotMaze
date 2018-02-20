@@ -30,6 +30,13 @@ class MazeRobot {
 		void correctTranslateX(long corr) { correctionX = corr; };
 		void correctTranslateY(long corr) { correctionY = corr; };
 		void correctRotate(long corr) { correctionRotate = corr; };
+		// get speed goals
+		long getGoalX() { return goalX; };
+		long getGoalY() { return goalY; };
+		long getGoalRotate() { return goalRotate; };
+		long getMaxGoal() { return max(goalX,max(goalY,goalRotate)); };
+		// reset values;
+		void reset() { goalX = goalY = goalRotate = correctionX = correctionY = correctionRotate = 0; };
 		// perform cycle of movement
 		void performMovement();
 		// attach a MechanumController instance

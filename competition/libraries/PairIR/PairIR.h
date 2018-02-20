@@ -10,6 +10,7 @@ class PairIR {
 		int diffGoal = 0;
 		int diffTolerance = 5;
 		// distance variables
+		bool checkTolerance = true;
 		int distGoal = 400;
 		int distTolerance = 10;
 		int distMin = 0;
@@ -29,6 +30,7 @@ class PairIR {
 		// set values
 		void setDiffGoal(int goal) { diffGoal = goal; };
 		void setDiffTolerance(int thresh) { diffTolerance = thresh; };
+		void setCheckTolerance(bool check) { checkTolerance = check; };
 		void setDistGoal(int goal) { distGoal = goal; };
 		void setDistTolerance(int thresh) { distTolerance = thresh; };
 		void setDistMin(int min) { distMin = min; };

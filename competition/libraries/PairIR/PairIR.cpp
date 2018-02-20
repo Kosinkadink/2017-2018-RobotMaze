@@ -39,13 +39,28 @@ int PairIR::getDiffCorrection() {
 
 int PairIR::getDistCorrection() {
 	int dist = getDist();
-	if (dist < distGoal - distTolerance) {
-		return distGoal - dist;
+	// if should check tolerance, stay around the goal
+	if (checkTolerance) {
+		if (dist < distGoal - distTolerance) {
+			return distGoal - dist;
+		}
+		else if (dist > distGoal + distTolerance) {
+			return distGoal - dist;
+		}
+		else {
+			return 0;
+		}
 	}
-	else if (dist > distGoal + distTolerance) {
-		return distGoal - dist;
-	}
+	// otherwise stay with min/max bounds
 	else {
-		return 0;
+		if (dist < distMin) {
+			return distMin - dist;
+		}
+		else if (dist > distMax) {
+			return distMax - dist;
+		}
+		else {
+			return 0;
+		}
 	}
 }

@@ -28,22 +28,25 @@ void loop() {
 	leftPair.read();
 	frontPair.read();
 	rightPair.read();
+	/*
 	// for back pair:
 	Serial.print(backPair.getDiff());
 	Serial.print("\t");
 	Serial.println(backPair.getDist());
-	/*
+	
 	// for left pair:
 	Serial.print(leftPair.getDiff());
 	Serial.print("\t");
 	Serial.println(leftPair.getDist());
+	
 	// for front pair:
 	Serial.print(frontPair.getDiff());
 	Serial.print("\t");
 	Serial.println(frontPair.getDist());
 	// for right pair:
+	*/
 	Serial.print(rightPair.getDiff());
 	Serial.print("\t");
 	Serial.println(rightPair.getDist());
-	*/
+	
 }
