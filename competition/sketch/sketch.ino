@@ -42,13 +42,6 @@ const long max_stick_value = 100;
 #define BACK_RIGHT_MOTOR_PIN2 25
 
 
-int diffGoal = 0;
-int diffTolerance = 15;
-
-int distGoal = 485;
-int distTolerance = 25;
-
-
 // create robot parts
 ScrapEncoder encoderFL = ScrapEncoder(FRONT_LEFT_PIN_INTERRUPT, FRONT_LEFT_PIN_CHECKER);
 ScrapEncoder encoderFR = ScrapEncoder(FRONT_RIGHT_PIN_INTERRUPT, FRONT_RIGHT_PIN_CHECKER);
@@ -80,7 +73,16 @@ PairIR* criticalIR;
 // done creating IR
 
 
-float generalSpeed = 60;
+float generalSpeed = 80;
+
+int diffGoal = 0;
+int diffTolerance = 15;
+
+int distGoal = 485;
+int distTolerance = 25;
+
+int distSlowdown = 250;
+int distTransition = 400;
 
 // PIDs
 PID distPID = PID(0.06,0.000025,0.00001);
@@ -211,10 +213,10 @@ void firstSegment() {
 			diffPID.calculate(rightPair.getDiffCorrection()*getCorrectionMultiplier());
 			
 			startTimeIR = currentTime;
-			if (frontPair.getDist() >= 400) {
+			if (frontPair.getDist() >= distTransition) {
 				break;
 			}
-			else if (frontPair.getDist() < 400 && frontPair.getDist() > 250) {
+			else if (frontPair.getDist() < distTransition && frontPair.getDist() > distSlowdown) {
 				mazeRobot.setTranslateY(10);	
 			}
 		}
@@ -245,10 +247,10 @@ void secondSegment() {
 			diffPID.calculate(frontPair.getDiffCorrection()*getCorrectionMultiplier());
 			
 			startTimeIR = currentTime;
-			if (leftPair.getDist() >= 400) {
+			if (leftPair.getDist() >= distTransition) {
 				break;
 			}
-			else if (leftPair.getDist() < 400 && leftPair.getDist() > 250) {
+			else if (leftPair.getDist() < distTransition && leftPair.getDist() > distSlowdown) {
 				mazeRobot.setTranslateX(-10);	
 			}
 		}
@@ -279,10 +281,10 @@ void thirdSegment() {
 			diffPID.calculate(leftPair.getDiffCorrection()*getCorrectionMultiplier());
 			
 			startTimeIR = currentTime;
-			if (backPair.getDist() >= 400) {
+			if (backPair.getDist() >= distTransition) {
 				break;
 			}
-			else if (backPair.getDist() < 400 && backPair.getDist() > 250) {
+			else if (backPair.getDist() < distTransition && backPair.getDist() > distSlowdown) {
 				mazeRobot.setTranslateY(-10);	
 			}
 		}
@@ -335,10 +337,10 @@ void fourthSegment() {
 
 
 			startTimeIR = currentTime;
-			if (rightPair.getDist() >= 400) {
+			if (rightPair.getDist() >= distTransition) {
 				break;
 			}
-			else if (rightPair.getDist() < 400 && rightPair.getDist() > 250) {
+			else if (rightPair.getDist() < distTransition && rightPair.getDist() > distSlowdown) {
 				mazeRobot.setTranslateX(10);
 			}
 		}
@@ -369,10 +371,10 @@ void fifthSegment() {
 			diffPID.calculate(rightPair.getDiffCorrection()*getCorrectionMultiplier());
 			
 			startTimeIR = currentTime;
-			if (backPair.getDist() >= 400) {
+			if (backPair.getDist() >= distTransition) {
 				break;
 			}
-			else if (backPair.getDist() < 400 && backPair.getDist() > 250) {
+			else if (backPair.getDist() < distTransition && backPair.getDist() > distSlowdown) {
 				mazeRobot.setTranslateY(-10);	
 			}
 		}
@@ -422,10 +424,10 @@ void sixthSegment() {
 
 
 			startTimeIR = currentTime;
-			if (leftPair.getDist() >= 400) {
+			if (leftPair.getDist() >= distTransition) {
 				break;
 			}
-			else if (leftPair.getDist() < 400 && leftPair.getDist() > 250) {
+			else if (leftPair.getDist() < distTransition && leftPair.getDist() > distSlowdown) {
 				mazeRobot.setTranslateX(-10);
 			}
 		}
@@ -456,10 +458,10 @@ void seventhSegment() {
 			diffPID.calculate(backPair.getDiffCorrection()*getCorrectionMultiplier());
 
 			startTimeIR = currentTime;
-			if (leftPair.getDist() >= 400) {
+			if (leftPair.getDist() >= distTransition) {
 				break;
 			}
-			else if (leftPair.getDist() < 400 && leftPair.getDist() > 250) {
+			else if (leftPair.getDist() < distTransition && leftPair.getDist() > distSlowdown) {
 				mazeRobot.setTranslateX(-10);
 			}
 		}
