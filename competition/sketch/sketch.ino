@@ -73,20 +73,20 @@ PairIR* criticalIR;
 // done creating IR
 
 
-float generalSpeed = 80;
+float generalSpeed = 40;
 
 int diffGoal = 0;
-int diffTolerance = 15;
+int diffTolerance = 10;
 
 int distGoal = 485;
-int distTolerance = 25;
+int distTolerance = 20;
 
-int distSlowdown = 250;
-int distTransition = 400;
+int distSlowdown = 230;
+int distTransition = 385;
 
 // PIDs
-PID distPID = PID(0.06,0.000025,0.00001);
-PID diffPID = PID(0.06,0.000025,0);
+PID distPID = PID(0.07,0.000025,0.00001);
+PID diffPID = PID(0.07,0.000025,0);
 // done with PIDs
 
 // timers
@@ -112,19 +112,19 @@ void setup() {
 	// set IR stuff
 	backPair.setDiffGoal(-10);
 	backPair.setDiffTolerance(diffTolerance);
-	backPair.setDistGoal(475);
+	backPair.setDistGoal(465);
 	backPair.setDistTolerance(distTolerance);
 	leftPair.setDiffGoal(-7);
 	leftPair.setDiffTolerance(diffTolerance);
-	leftPair.setDistGoal(475);
+	leftPair.setDistGoal(465);
 	leftPair.setDistTolerance(distTolerance);
 	frontPair.setDiffGoal(-3);
 	frontPair.setDiffTolerance(diffTolerance);
-	frontPair.setDistGoal(475);
+	frontPair.setDistGoal(465);
 	frontPair.setDistTolerance(distTolerance);
 	rightPair.setDiffGoal(10);
 	rightPair.setDiffTolerance(diffTolerance);
-	rightPair.setDistGoal(460);
+	rightPair.setDistGoal(455);
 	rightPair.setDistTolerance(distTolerance);
 	// set PID stuff
 	distPID.setGoal(0);
@@ -418,6 +418,7 @@ void sixthSegment() {
 			// otherwise, strage and then hug top wall
 			else {
 				//distPID.calculate(frontPair.getDistCorrection()*getCorrectionMultiplier());
+				distPID.reset();
 				diffPID.calculate(frontPair.getDiffCorrection()*getCorrectionMultiplier());
 				
 			}
