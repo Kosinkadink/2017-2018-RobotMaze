@@ -35,6 +35,8 @@ class MazeRobot {
 		long getGoalY() { return goalY; };
 		long getGoalRotate() { return goalRotate; };
 		long getMaxGoal() { return max(goalX,max(goalY,goalRotate)); };
+		// get average encoder count
+		long getAverageCount() { return mech->getAverageCount(); };
 		// reset values;
 		void reset() { goalX = goalY = goalRotate = correctionX = correctionY = correctionRotate = 0; };
 		// perform cycle of movement

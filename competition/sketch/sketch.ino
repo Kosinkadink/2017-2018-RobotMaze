@@ -85,8 +85,8 @@ int distSlowdown = 230;
 int distTransition = 385;
 
 // PIDs
-PID distPID = PID(0.07,0.000025,0.00001);
-PID diffPID = PID(0.07,0.000025,0);
+PID distPID = PID(0.12,0.000025,0.00001);
+PID diffPID = PID(0.12,0.000025,0);
 // done with PIDs
 
 // timers
@@ -139,6 +139,12 @@ void setup() {
 	//delay(2000);
 	delay(2000);
 	// perform segments
+	
+	// NAVIGATE THROUGH BEGINNING BLOCK
+	seventhSegment();
+	eighthSegment();
+	// NAVIGATE THROUGH MIDDLE TWO BLOCKS
+	/*
 	firstSegment();
 	secondSegment();
 	thirdSegment();
@@ -149,6 +155,8 @@ void setup() {
 	fourthSegment();
 	fifthSegment();
 	seventhSegment();
+	*/
+
 }
 
 void loop() {
@@ -478,7 +486,47 @@ void seventhSegment() {
 	mazeRobot.reset();
 }
 
-
+void eighthSegment() {
+	// FORWARD following LEFT wall
+	distPID.reset();
+	diffPID.reset();
+	mazeRobot.setTranslateY(generalSpeed);
+	// encoder counts
+	long startEncoderCount = mazeRobot.getAverageCount();
+	long currEncoderCount = startEncoderCount;
+	long countDifference;
+	while (true) {
+		unsigned long currentTime = micros();
+		if (currentTime - startTimeIR > 5000) {
+			
+			allRead();
+			distPID.calculate(-leftPair.getDistCorrection()*getCorrectionMultiplier());
+			diffPID.calculate(leftPair.getDiffCorrection()*getCorrectionMultiplier());
+			// encoder count stuff
+			currEncoderCount = mazeRobot.getAverageCount();
+			countDifference = currEncoderCount - startEncoderCount;
+			// end of encoder count stuff
+			startTimeIR = currentTime;
+			//if (backPair.getDistMin() <= 130 || countDifference > 2000) {
+			if (countDifference > 1850) {
+				break;
+			}
+			//else if (backPair.getDist() > 130 && backPair.getDist() < (130+20)) {
+			else if (backPair.getDist() < (130+35)) {
+				mazeRobot.setTranslateY(10);	
+			}
+		}
+		if (currentTime - startTime > 2000) {
+			
+			mazeRobot.correctRotate(diffPID.getValue());
+			mazeRobot.correctTranslateX(distPID.getValue());
+			// perform designated movement
+			mazeRobot.performMovement();
+			startTime = currentTime;
+		}
+	}
+	mazeRobot.reset();
+}
 
 
 

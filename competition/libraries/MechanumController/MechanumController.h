@@ -35,6 +35,7 @@ class MechanumController {
 		void setMaximumSpeed(float speed);
 		void setMaximumValue(long value) { maximum_val = value; };
 		void setDeadzone(long value) { deadzone = value; };
+		long getAverageCount();
 
 };
 

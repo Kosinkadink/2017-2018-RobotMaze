@@ -20,6 +20,14 @@ int PairIR::getDist() {
 	return (leftReading+rightReading)/2;
 }
 
+int PairIR::getDistMin() {
+	return min(leftReading,rightReading);
+}
+
+int PairIR::getDistMax() {
+	return max(leftReading,rightReading);
+}
+
 void PairIR::getNewMovingMean(int newValue, int& mean) {
 	mean = newValue*newValueWeight + mean*(1-newValueWeight);
 }
