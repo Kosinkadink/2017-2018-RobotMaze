@@ -140,25 +140,34 @@ void setup() {
 	delay(2000);
 	// perform segments
 	
-	// NAVIGATE THROUGH BEGINNING BLOCK
+	/* NAVIGATE THROUGH BEGINNING BLOCK */
 	seventhSegment(); // LEFT
 	eighthSegment(); // UP
 	ninthSegment(); // RIGHT
 	firstSegment(); // UP
+	tenthSegment(); // LEFT
+	// NAVIGATE DOWN RAMP
+	eleventhSegment(); // UP
+	/* NAVIGATE THROUGH MIDDLE TWO BLOCKS */
+	secondSegment(); //LEFT
+	thirdSegment(); // DOWN
+	fourthSegment(); // RIGHT
+	fifthSegment(); // DOWN
+	sixthSegment(); // LEFT
+	thirdSegment(); // DOWN
+	fourthSegment(); // RIGHT
+	fifthSegment(); // DOWN
+	seventhSegment(); // LEFT
+	/* NAVIGATE UP RAMP */
+	eleventhSegment(); // UP
+	/* NAVIGATE THROUGH END BLOCK */
+	tenthSegment(); // LEFT
+	twelfthSegment(); // UP
+	thirteenthSegment(); // RIGHT
+	firstSegment(); // UP
+	secondSegment(); // LEFT
 	
-	// NAVIGATE THROUGH MIDDLE TWO BLOCKS
-	/*
-	firstSegment();
-	secondSegment();
-	thirdSegment();
-	fourthSegment();
-	fifthSegment();
-	sixthSegment();
-	thirdSegment();
-	fourthSegment();
-	fifthSegment();
-	seventhSegment();
-	*/
+	
 
 }
 
@@ -326,6 +335,8 @@ void fourthSegment() {
 			
 			if (abs(backPair.getDiff()) > 100) {
 				huggingBottom = false;
+				diffPID.reset();
+				distPID.reset();
 			}
 			if (!huggingBottom && frontPair.getDist() > 300) {
 				huggingFront = true;
@@ -589,6 +600,185 @@ void ninthSegment() {
 	mazeRobot.reset();
 }
 
+void tenthSegment() {
+	// LEFTWARD going between TOP then BOTTOM wall
+	distPID.reset();
+	diffPID.reset();
+	mazeRobot.setTranslateX(-generalSpeed);
+	bool huggingBottom = false;
+	bool huggingFront = true;
+	while (true) {
+		unsigned long currentTime = micros();
+		if (currentTime - startTimeIR > 5000) {
+			
+			allRead();
+			
+			if (abs(frontPair.getDiff()) > 100) {
+				huggingFront = false;
+				diffPID.reset();
+				distPID.reset();
+			}
+			if (!huggingFront && backPair.getDist() > 300) {
+				huggingBottom = true;
+			}
+			// while next to top wall, hug it
+			if (huggingFront) {
+				distPID.calculate(frontPair.getDistCorrection()*getCorrectionMultiplier());
+				diffPID.calculate(frontPair.getDiffCorrection()*getCorrectionMultiplier());
+			}
+			// otherwise, strage and then hug top wall
+			/*else {
+				if (huggingFront) {
+					distPID.calculate(frontPair.getDistCorrection()*getCorrectionMultiplier());
+					diffPID.calculate(frontPair.getDiffCorrection()*getCorrectionMultiplier());
+				}
+				else {
+					diffPID.reset();
+				}
+			}*/
+
+
+			startTimeIR = currentTime;
+			if (leftPair.getDist() >= distTransition) {
+				break;
+			}
+			else if (leftPair.getDist() < distTransition && leftPair.getDist() > distSlowdown) {
+				mazeRobot.setTranslateX(10);
+			}
+		}
+		if (currentTime - startTime > 2000) {
+			
+			mazeRobot.correctRotate(diffPID.getValue());
+			mazeRobot.correctTranslateY(distPID.getValue());
+			// perform designated movement
+			mazeRobot.performMovement();
+			startTime = currentTime;
+		}
+	}
+	mazeRobot.reset();
+}
+
+void eleventhSegment() {
+	// FORWARD down the ramp, following the LEFT then RIGHT wall
+	distPID.reset();
+	diffPID.reset();
+	mazeRobot.setTranslateY(10);
+	bool huggingRight = false;
+	while (true) {
+		unsigned long currentTime = micros();
+		if (currentTime - startTimeIR > 5000) {
+			
+			allRead();
+			// if hugging right, hug right
+			if (huggingRight) {
+				distPID.calculate(rightPair.getDistCorrection()*getCorrectionMultiplier());
+				diffPID.calculate(rightPair.getDiffCorrection()*getCorrectionMultiplier());
+			}
+			// else hug left and check if in a good position to hug right
+			else {
+				distPID.calculate(-leftPair.getDistCorrection()*getCorrectionMultiplier());
+				diffPID.calculate(leftPair.getDiffCorrection()*getCorrectionMultiplier());
+				if (rightPair.getDist() > 300 && rightPair.getDiff() < 100) {
+					huggingRight = true;
+				}
+			}
+
+			startTimeIR = currentTime;
+			if (frontPair.getDist() >= distTransition) {
+				break;
+			}
+			else if (frontPair.getDist() < distTransition && frontPair.getDist() > distSlowdown) {
+				mazeRobot.setTranslateY(10);	
+			}
+		}
+		if (currentTime - startTime > 2000) {
+			
+			mazeRobot.correctRotate(diffPID.getValue());
+			mazeRobot.correctTranslateX(distPID.getValue());
+			// perform designated movement
+			mazeRobot.performMovement();
+			startTime = currentTime;
+		}
+	}
+	mazeRobot.reset();
+}
+
+void twelfthSegment() {
+	// FORWARD following LEFT wall
+	distPID.reset();
+	diffPID.reset();
+	mazeRobot.setTranslateY(generalSpeed);
+	while (true) {
+		unsigned long currentTime = micros();
+		if (currentTime - startTimeIR > 5000) {
+			
+			allRead();
+			distPID.calculate(-leftPair.getDistCorrection()*getCorrectionMultiplier());
+			diffPID.calculate(leftPair.getDiffCorrection()*getCorrectionMultiplier());
+			
+			startTimeIR = currentTime;
+			if (frontPair.getDist() >= distTransition) {
+				break;
+			}
+			else if (frontPair.getDist() < distTransition && frontPair.getDist() > distSlowdown) {
+				mazeRobot.setTranslateY(10);	
+			}
+		}
+		if (currentTime - startTime > 2000) {
+			
+			mazeRobot.correctRotate(diffPID.getValue());
+			mazeRobot.correctTranslateX(distPID.getValue());
+			// perform designated movement
+			mazeRobot.performMovement();
+			startTime = currentTime;
+		}
+	}
+	mazeRobot.reset();
+}
+
+void thirteenthSegment() {
+	// RIGHTWARD following TOP wall, then strafing until RIGHT wall
+	distPID.reset();
+	diffPID.reset();
+	mazeRobot.setTranslateX(generalSpeed);
+	bool huggingFront = true;
+	while (true) {
+		unsigned long currentTime = micros();
+		if (currentTime - startTimeIR > 5000) {
+			
+			allRead();
+			
+			if (abs(frontPair.getDiff()) > 100) {
+				huggingFront = false;
+				diffPID.reset();
+				distPID.reset();
+			}
+			// while next to top wall, hug it
+			if (huggingFront) {
+				distPID.calculate(frontPair.getDistCorrection()*getCorrectionMultiplier());
+				diffPID.calculate(frontPair.getDiffCorrection()*getCorrectionMultiplier());
+			}
+
+
+			startTimeIR = currentTime;
+			if (rightPair.getDist() >= distTransition) {
+				break;
+			}
+			else if (rightPair.getDist() < distTransition && rightPair.getDist() > distSlowdown) {
+				mazeRobot.setTranslateX(10);
+			}
+		}
+		if (currentTime - startTime > 2000) {
+			
+			mazeRobot.correctRotate(diffPID.getValue());
+			mazeRobot.correctTranslateY(distPID.getValue());
+			// perform designated movement
+			mazeRobot.performMovement();
+			startTime = currentTime;
+		}
+	}
+	mazeRobot.reset();
+}
 
 
 void initEncoders() {
