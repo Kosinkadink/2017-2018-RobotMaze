@@ -141,8 +141,11 @@ void setup() {
 	// perform segments
 	
 	// NAVIGATE THROUGH BEGINNING BLOCK
-	seventhSegment();
-	eighthSegment();
+	seventhSegment(); // LEFT
+	eighthSegment(); // UP
+	ninthSegment(); // RIGHT
+	firstSegment(); // UP
+	
 	// NAVIGATE THROUGH MIDDLE TWO BLOCKS
 	/*
 	firstSegment();
@@ -520,6 +523,64 @@ void eighthSegment() {
 			
 			mazeRobot.correctRotate(diffPID.getValue());
 			mazeRobot.correctTranslateX(distPID.getValue());
+			// perform designated movement
+			mazeRobot.performMovement();
+			startTime = currentTime;
+		}
+	}
+	mazeRobot.reset();
+}
+
+void ninthSegment() {
+	// RIGHTWARD between two walls until sensors register the wall
+	distPID.reset();
+	diffPID.reset();
+	mazeRobot.setTranslateX(10);
+	bool foundBottom = false;
+	bool huggingBottom = false;
+	while (true) {
+		unsigned long currentTime = micros();
+		// read sensors and make some decisions
+		if (currentTime - startTimeIR > 5000) {
+			
+			allRead();
+			
+			// if hugging bottom, get the regular dist+diff PID calcs
+			if (huggingBottom) {
+				distPID.calculate(-backPair.getDistCorrection()*getCorrectionMultiplier());
+				diffPID.calculate(backPair.getDiffCorrection()*getCorrectionMultiplier());
+			}
+			// if only just found bottom so far, use closest sensor as distance
+			// when the difference between sensors is small enough, robot is then hugging bottom
+			else if (foundBottom) {
+				distPID.calculate(-backPair.getDistCorrection(1)*getCorrectionMultiplier());
+				if (backPair.getDiff() < 100) {
+					huggingBottom = true;
+				}
+			}
+			// otherwise, when the closest bottom sensor returns a close enough value
+			// we know we have found the bottom wall
+			else {
+				if (backPair.getDistMax() > 300) {
+					foundBottom = true;
+				}
+			}
+
+
+			startTimeIR = currentTime;
+			// done when the robot is close enough to the right wall
+			if (rightPair.getDist() >= distTransition) {
+				break;
+			}
+			else if (rightPair.getDist() < distTransition && rightPair.getDist() > distSlowdown) {
+				mazeRobot.setTranslateX(10);
+			}
+		}
+		// update motor movement
+		if (currentTime - startTime > 2000) {
+			
+			mazeRobot.correctRotate(diffPID.getValue());
+			mazeRobot.correctTranslateY(distPID.getValue());
 			// perform designated movement
 			mazeRobot.performMovement();
 			startTime = currentTime;

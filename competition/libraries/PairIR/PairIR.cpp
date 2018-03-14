@@ -45,8 +45,16 @@ int PairIR::getDiffCorrection() {
 	}
 }
 
-int PairIR::getDistCorrection() {
-	int dist = getDist();
+int PairIR::getDistCorrection(int valueToUse) {
+	int dist;
+	
+	switch(valueToUse) {
+		case -1: dist = getDistMin(); break; // get min
+		case 0: dist = getDist(); break; // get average
+		case 1: dist = getDistMax(); break; // get max
+		default: dist = getDist(); //get average otherwise
+	}
+
 	// if should check tolerance, stay around the goal
 	if (checkTolerance) {
 		if (dist < distGoal - distTolerance) {

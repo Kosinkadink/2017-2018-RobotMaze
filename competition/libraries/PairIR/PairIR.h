@@ -50,7 +50,7 @@ class PairIR {
 		int getDistMax();
 		// get data after considering thresholds; full means include thresholded distance
 		int getDiffCorrection();
-		int getDistCorrection();
+		int getDistCorrection(int valueToUse=0);
 };
 
 #endif
