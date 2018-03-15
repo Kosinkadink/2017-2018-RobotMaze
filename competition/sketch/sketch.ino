@@ -73,7 +73,7 @@ PairIR* criticalIR;
 // done creating IR
 
 
-float generalSpeed = 40;
+float generalSpeed = 50;
 
 int diffGoal = 0;
 int diffTolerance = 10;
@@ -333,12 +333,12 @@ void fourthSegment() {
 			
 			allRead();
 			
-			if (abs(backPair.getDiff()) > 100) {
+			if (backPair.getDistMin() < 300) {//abs(backPair.getDiff()) > 100) {
 				huggingBottom = false;
 				diffPID.reset();
 				distPID.reset();
 			}
-			if (!huggingBottom && frontPair.getDist() > 300) {
+			if (!huggingBottom && frontPair.getDistMin() > 300) {
 				huggingFront = true;
 			}
 			// while next to bottom wall, hug it
@@ -576,6 +576,7 @@ void ninthSegment() {
 				}
 				if (huggingBottomCount >= 50) {
 					huggingBottom = true;
+					mazeRobot.setTranslateX(40);
 				}
 
 			}
@@ -694,7 +695,7 @@ void eleventhSegment() {
 			else {
 				distPID.calculate(-leftPair.getDistCorrection()*getCorrectionMultiplier());
 				diffPID.calculate(leftPair.getDiffCorrection()*getCorrectionMultiplier());
-				if (rightPair.getDist() > 300 && rightPair.getDiff() < 100) {
+				if (rightPair.getDistMin() > 300) {//} && rightPair.getDiff() < 100) {
 					huggingRight = true;
 				}
 			}
@@ -819,7 +820,7 @@ void fourteenthSegment() {
 			else {
 				distPID.calculate(-leftPair.getDistCorrection()*getCorrectionMultiplier());
 				diffPID.calculate(leftPair.getDiffCorrection()*getCorrectionMultiplier());
-				if (rightPair.getDist() > 300 && rightPair.getDiff() < 100) {
+				if (rightPair.getDistMin() > 300) {// && rightPair.getDiff() < 100) {
 					huggingRight = true;
 				}
 			}
