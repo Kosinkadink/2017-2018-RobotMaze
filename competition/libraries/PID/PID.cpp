@@ -16,6 +16,7 @@ void PID::reset() {
 	lastTimestamp = micros();
 	integral = 0;
 	lastError = 0;
+	lastValue = 0;
 }
 
 
