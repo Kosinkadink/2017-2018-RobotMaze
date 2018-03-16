@@ -6,6 +6,11 @@ PID::PID() {
 
 
 PID::PID(float p, float i, float d) {
+	setConstants(p,i,d);
+}
+
+
+void PID::setConstants(float p, float i, float d) {
 	pConst = p;
 	iConst = i;
 	dConst = d;
@@ -32,7 +37,7 @@ float PID::calculate(float measured) {
 	else {
 		// calculate P, I, D
 		error = measured-goal;
-		integralValue = (error*(timeDelta/1000000));
+		integralValue = (error*(timeDelta/1000000.0));
 		if (!resetIntegral) {
 			integral += integralValue;
 		}
@@ -44,7 +49,7 @@ float PID::calculate(float measured) {
 				integral += integralValue;
 			}
 		}
-		derivative = (error-lastError)/(timeDelta/1000000);
+		derivative = (error-lastError)/(timeDelta/1000000.0);
 		// update lastError
 		lastError = error;
 		// calculate new value and set it

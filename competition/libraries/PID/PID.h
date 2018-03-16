@@ -12,7 +12,6 @@ class PID {
 		unsigned long lastTimestamp = micros();
 		float lastError = 0;
 		float integral = 0;
-		float lastIntegralValue = 0;
 		// others
 		float goal = 0;
 		float lastValue = 0;
@@ -21,6 +20,7 @@ class PID {
 		PID();
 		PID(float p=0, float i=0, float d=0);
 		void reset();
+		void setConstants(float p=0, float i=0, float d=0);
 		void setGoal(long value) { goal = value; };
 		void setResetIntegral(bool value) { resetIntegral = value; };
 		float getValue() { return lastValue; };
