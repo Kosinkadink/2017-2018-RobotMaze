@@ -207,7 +207,7 @@ class ScrapControllerInterface {
 		virtual void setSlowdownThresh(long thresh) { slowdownThresh = thresh; };
 		virtual void setMinSlowPower(int power) { minSlowPower = power; };
 		virtual void setMinEncSpeed(float speed) { minEncSpeed = speed; };
-		virtual void setMaxSpeedEnc(float speed) { maxEncSpeed = speed; };
+		virtual void setMaxEncSpeed(float speed) { maxEncSpeed = speed; };
 };
 
 
@@ -268,6 +268,7 @@ class ScrapDualController: public ScrapControllerInterface {
 		ScrapDualController(ScrapMotorControl& motorControl1, ScrapMotorControl& motorControl2);
 		ScrapDualController(ScrapMotor& mot1, ScrapMotor& mot2, ScrapEncoder& enc1, ScrapEncoder& enc2);
 		ScrapDualController(ScrapMotor& mot1, ScrapMotor& mot2, ScrapEncoder& enc1, ScrapEncoder& enc2, ScrapSwitch& swi1, ScrapSwitch& swi2);
+		virtual void initControllers(); // apply constants to motor controllers
 		// get/set encoder goals
 		virtual bool set(long g1, long g2);
 		virtual bool set(long goal);
@@ -313,13 +314,14 @@ class ScrapDualController: public ScrapControllerInterface {
 		virtual void setDiffTolerance(long tolerance) { diffTolerance = tolerance; };
 		virtual void setEncTolerance1(long tolerance) { encTolerance1 = tolerance; };
 		virtual void setEncTolerance2(long tolerance) { encTolerance2 = tolerance; };
-		virtual void setEncTolerance(long tolerance) { setEncTolerance1(tolerance); setEncTolerance2(tolerance); };
+		virtual void setEncTolerance(long tolerance) { encTolerance = tolerance; setEncTolerance1(tolerance); setEncTolerance2(tolerance); };
 		virtual void setSlowdownThresh1(long thresh) { slowdownThresh1 = thresh; };
 		virtual void setSlowdownThresh2(long thresh) { slowdownThresh2 = thresh; };
 		virtual void setSlowdownThresh(long thresh) { setSlowdownThresh1(thresh); setSlowdownThresh2(thresh); };
 		virtual void setMinSlowPower1(int power) { minSlowPower1 = power; };
 		virtual void setMinSlowPower2(int power) { minSlowPower2 = power; };
 		virtual void setMinSlowPower(int power) { setMinSlowPower1(power); setMinSlowPower2(power); };
+		virtual void setSpeedBalance(float speed) { speedBalance = speed; };
 };
 
 

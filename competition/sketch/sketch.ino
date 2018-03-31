@@ -426,6 +426,19 @@ void sixthSegment() {
 			
 			allRead();
 			
+
+			if (huggingFront) {
+				distPID.calculate(frontPair.getDistCorrection()*getCorrectionMultiplier());
+				diffPID.calculate(frontPair.getDiffCorrection()*getCorrectionMultiplier());
+			}
+			else {
+				distPID.calculate(-backPair.getDistCorrection()*getCorrectionMultiplier());
+				diffPID.calculate(backPair.getDiffCorrection()*getCorrectionMultiplier());
+				if (frontPair.getDistMin() > 300) {
+					huggingFront = true;
+				}
+			}
+			/*
 			if (abs(backPair.getDiff()) > 100) {
 				huggingBottom = false;
 			}
@@ -444,6 +457,7 @@ void sixthSegment() {
 				diffPID.calculate(frontPair.getDiffCorrection()*getCorrectionMultiplier());
 				
 			}
+			*/
 
 
 			startTimeIR = currentTime;

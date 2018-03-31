@@ -26,6 +26,15 @@ ScrapDualController::ScrapDualController(ScrapMotor& mot1, ScrapMotor& mot2, Scr
 	stop();
 }
 
+void ScrapDualController::initControllers() {
+	speedControl1->setMinPower(minSlowPower1);
+	speedControl1->setMinSpeed(minEncSpeed);
+	speedControl1->setMaxSpeed(maxEncSpeed);
+	speedControl2->setMinPower(minSlowPower2);
+	speedControl2->setMinSpeed(minEncSpeed);
+	speedControl2->setMaxSpeed(maxEncSpeed);
+}
+
 // move back until switches are activated
 bool ScrapDualController::performReset() {
 	speedControl1->stop();
@@ -153,16 +162,16 @@ void ScrapDualController::decrementSpeed(float speedDiff) {
 void ScrapDualController::balanceSpeed() {
 	float common_speed;
 	// if 1 too far ahead, balance power towards 2
-	if (abs((speedControl1->getCount() - speedControl2->getCount())*speedControl1->getDirection()) >= diffTolerance) {
+	if ((speedControl1->getCount() - speedControl2->getCount())*speedControl1->getDirection() >= diffTolerance) {
 		moveSpeedToward2(speedBalance);
 	}
 	// if 2 too far ahead, balance power towards 1
-	else if (abs((speedControl1->getCount() - speedControl2->getCount())*speedControl1->getDirection()) <= -diffTolerance) {
+	else if ((speedControl1->getCount() - speedControl2->getCount())*speedControl1->getDirection() <= -diffTolerance) {
 		moveSpeedToward1(speedBalance);
 	}
 	// otherwise, make speeds match if possible
 	else {
-		if (speedControl1->getSpeedGoal() != 0 && speedControl1->getSpeedGoal() != 0) {
+		if (speedControl1->getSpeedGoal() != 0 && speedControl2->getSpeedGoal() != 0) {
 			common_speed = (speedControl1->getSpeedGoal() + speedControl2->getSpeedGoal())/2.0;
 			speedControl1->setSpeed(common_speed);
 			speedControl2->setSpeed(common_speed);
@@ -187,9 +196,9 @@ bool ScrapDualController::checkIfDone() {
 }
 
 bool ScrapDualController::checkIfDone1() {
-	return (speedControl1->getCount() >= goal1 - encTolerance ) && (speedControl1->getCount() <= goal1 + encTolerance );
+	return (speedControl1->getCount() >= goal1 - encTolerance1 ) && (speedControl1->getCount() <= goal1 + encTolerance1);
 }
 
 bool ScrapDualController::checkIfDone2() {
-	return (speedControl2->getCount() >= goal2 - encTolerance ) && (speedControl2->getCount() <= goal2 + encTolerance );
+	return (speedControl2->getCount() >= goal2 - encTolerance2 ) && (speedControl2->getCount() <= goal2 + encTolerance2 );
 }

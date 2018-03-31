@@ -87,7 +87,7 @@ void ScrapMotorControl::setControl(float newSpeed) {
 
 void ScrapMotorControl::performMovement() {
 	if (speedGoal == 0) {
-		reset();
+		stop();
 	}
 	else {
 		// calculate speed
