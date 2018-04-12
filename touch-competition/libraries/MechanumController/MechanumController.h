@@ -6,9 +6,9 @@
 
 class MechanumController {
 	private:
-		float minEncSpeed = 100;
-		float maxEncSpeed = 2500;
-		int minPower = 50;
+		float minEncSpeed = 0;
+		float maxEncSpeed = 600;
+		int minPower = 5;
 		long translate_x = 0;
 		long translate_y = 0;
 		long rotate = 0;

@@ -16,13 +16,13 @@ void PairSwitch::read() {
 		leftReading = 1;
 	}
 	else {
-		leftReading = -1;
+		leftReading = 0;
 	}
 	if (digitalRead(rightPin) == HIGH) {
 		rightReading = 1;
 	}
 	else {
-		rightReading = -1;
+		rightReading = 0;
 	}
 }
 

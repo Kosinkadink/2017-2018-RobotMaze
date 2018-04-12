@@ -132,6 +132,6 @@ void MechanumController::setMaximumSpeed(float speed) {
 }
 
 long MechanumController::getAverageCount() {
-	return (speedFL->getCount()+speedFR->getCount()+speedBL->getCount()+speedBR->getCount())/4;
+	return (speedFR->getCount()+speedBL->getCount()+speedBR->getCount())/3;
 }
 

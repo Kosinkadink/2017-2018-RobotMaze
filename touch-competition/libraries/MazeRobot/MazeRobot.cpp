@@ -55,6 +55,11 @@ void MazeRobot::performMovement() {
 	mech->setRotate(currentRotate);
 	// finally, perform mech's movement
 	mech->performMovement();
+	/*Serial.print(currentX);
+	Serial.print(" ");
+	Serial.print(currentY);
+	Serial.print(" ");
+	Serial.println(currentRotate);*/
 }
 
 
